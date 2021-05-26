@@ -6,11 +6,11 @@ const validate = require('../middlewares/validate-inputs');
 const sauceCtrl = require('../controllers/sauce');
 
 
-router.get('/', sauceCtrl.getAllSauce);
-router.get('/:id', validate.id, sauceCtrl.getOneSauce);
-router.post('/', multer, validate.sauce, sauceCtrl.createSauce);
-router.put('/:id', multer, validate.id, sauceCtrl.modifySauce);
-router.delete('/:id', validate.id, sauceCtrl.deleteSauce);
-router.post('/:id/like', validate.id, validate.like, sauceCtrl.likeSauce);
+router.get('/', auth, sauceCtrl.getAllSauce);
+router.get('/:id', auth, validate.id, sauceCtrl.getOneSauce);
+router.post('/', auth,  multer, validate.sauce, sauceCtrl.createSauce);
+router.put('/:id', auth,  multer, validate.id, sauceCtrl.modifySauce);
+router.delete('/:id', auth, validate.id, sauceCtrl.deleteSauce);
+router.post('/:id/like', auth, validate.id, validate.like, sauceCtrl.likeSauce);
 
 module.exports = router;

@@ -1,17 +1,18 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const fs = require('fs');
 const path = require('path');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const session = require('express-session');
+require('dotenv').config();
+
 
 const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');
 
 // Connexion à la base de données
-mongoose.connect('mongodb+srv://JanoMTL:Boucasse05@cluster0.dlaf8.mongodb.net/API-Piquante?retryWrites=true&w=majority',
+mongoose.connect(process.env.SECRET_DB,
     { useNewUrlParser: true,
       useCreateIndex: true,
       useUnifiedTopology: true })
@@ -23,7 +24,7 @@ const app = express();
 
 // Configuration cors
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin','*');
+    res.setHeader('Access-Control-Allow-Origin', process.env.SECRET_ORIGIN);
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     res.setHeader('Access-Control-Allow-Credentials', true);
@@ -39,18 +40,15 @@ app.use(morgan('combined', { stream: accessLogStream }));
 app.use(helmet());
 // Utilisation de la session pour stocker de manière persistante le JWT coté front
 app.use(session({ 
-  secret: 'secret_option', 
-  cookie: { maxAge: 900000 },// cookie stocké pendant 15 min
+  secret: process.env.SECRET_SESSION, 
   resave: false,
   saveUninitialized: false,
-
-
 })) 
 
-
+/** ---------- Routes ------ */
 
 app.use('/api/sauces', sauceRoutes);
 app.use('/api/auth', userRoutes);
-app.use(express.static(path.join(__dirname, 'images')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 module.exports = app;
