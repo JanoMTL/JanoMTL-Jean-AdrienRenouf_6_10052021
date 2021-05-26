@@ -1,4 +1,4 @@
-const http = require('http');
+const http = require('http'); // pour plus de sécurité, Je recommande l'utilisation de https requiert un certificat SSL à obtenir avec un nom de domaine
 const app = require('./app');
 
 const normalizePort = val => {

@@ -1,14 +1,23 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const fs = require('fs');
+// le Plugin 'path' sert dans l'upload des images
 const path = require('path');
 const morgan = require('morgan');
+//'helmet' protège l'application de certaines vulnérabilités (sécurisation des requêtes HTTP, sécurisation les en-têtes, contrôle la prélecture DNS du navigateur, empêche le détournement de clics
+// et ajout d'une protection XSS mineure)
 const helmet = require('helmet');
 const session = require('express-session');
+
+// utilisation du module 'dotenv' pour masquer les informations de connexion à la base de données à l'aide de variables d'environnement
 require('dotenv').config();
 
+// Déclaration des routes 
 
+//route dédiée aux sauces
 const sauceRoutes = require('./routes/sauce');
+
+//route dédiée aux utilisateurs
 const userRoutes = require('./routes/user');
 
 // Connexion à la base de données
@@ -19,7 +28,7 @@ mongoose.connect(process.env.SECRET_DB,
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-// Lancement de Express
+// Création d'une application express
 const app = express();
 
 // Configuration cors
@@ -38,7 +47,7 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'),
 app.use(morgan('combined', { stream: accessLogStream }));
 // Sécurise les headers
 app.use(helmet());
-// Utilisation de la session pour stocker de manière persistante le JWT coté front
+// Utilisation de la session pour stocker de manière persistante le token coté front
 app.use(session({ 
   secret: process.env.SECRET_SESSION, 
   resave: false,
@@ -49,6 +58,8 @@ app.use(session({
 
 app.use('/api/sauces', sauceRoutes);
 app.use('/api/auth', userRoutes);
+
+// permet de charger les fichiers qui sont dans le repertoire images
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 module.exports = app;

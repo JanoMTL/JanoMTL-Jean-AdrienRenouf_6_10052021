@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('../middlewares/multer-config');
 const auth = require('../middlewares/auth');
-const validate = require('../middlewares/validate-inputs');
+const validate = require('../middlewares/validate');
 const sauceCtrl = require('../controllers/sauce');
 
 

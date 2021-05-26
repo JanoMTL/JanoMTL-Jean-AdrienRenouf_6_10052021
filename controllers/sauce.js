@@ -75,7 +75,7 @@ exports.modifySauce = (req, res, next) => {
         const sauceObject = { ...req.body };
         Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
             .then(() => res.status(200).json({ message: 'Sauce modifiée!' }))
-            .catch(error => res.status(404).json({ error }));
+            .catch(error => res.status(400).json({ error }));
     }
 };
 
@@ -90,7 +90,7 @@ exports.deleteSauce = (req, res, next) => {
             fs.unlink(`images/${filename}`, () => {
                 Sauce.deleteOne({ _id: req.params.id })
                     .then(() => res.status(200).json({ message: 'Sauce supprimée'}))
-                    .catch(error => res.status(404).json({ error }));
+                    .catch(error => res.status(400).json({ error }));
             })
         })
         .catch(error => res.status(500).json({ error }));
@@ -138,7 +138,7 @@ exports.likeSauce = (req, res, next) => {
             /** Update du nombre de like /dislike */
             Sauce.updateOne({ _id: sauceId }, newValues )
                 .then(() => res.status(200).json({ message: 'Merci pour votre avis !' }))
-                .catch(error => res.status(404).json({ error }))  
+                .catch(error => res.status(400).json({ error }))  
         })
         .catch(error => res.status(500).json({ error }));
 }
