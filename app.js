@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const fs = require('fs');
 // le Plugin 'path' sert dans l'upload des images
 const path = require('path');
-const morgan = require('morgan');
+
 //'helmet' protège l'application de certaines vulnérabilités (sécurisation des requêtes HTTP, sécurisation les en-têtes, contrôle la prélecture DNS du navigateur, empêche le détournement de clics
 // et ajout d'une protection XSS mineure)
 const helmet = require('helmet');
@@ -43,8 +43,6 @@ app.use((req, res, next) => {
 // Parse le body des requetes en json
 app.use(express.json());
 
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
-app.use(morgan('combined', { stream: accessLogStream }));
 // Sécurise les headers
 app.use(helmet());
 // Utilisation de la session pour stocker de manière persistante le token coté front
@@ -54,7 +52,7 @@ app.use(session({
   saveUninitialized: false,
 })) 
 
-/** ---------- Routes ------ */
+/** ------------------------- Routes ------------------------ */
 
 app.use('/api/sauces', sauceRoutes);
 app.use('/api/auth', userRoutes);

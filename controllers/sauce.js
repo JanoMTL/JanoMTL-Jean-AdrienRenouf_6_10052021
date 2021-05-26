@@ -85,7 +85,11 @@ exports.deleteSauce = (req, res, next) => {
         res.status(400).json({ message: 'bad request'})
     }
         Sauce.findOne({ _id: req.params.id })
+        
         .then(sauce => {
+            if(sauce==null){
+                return res.status(404).json({ message: 'ressource inexistante'})
+            }
             const filename = sauce.imageUrl.split('/images/')[1];
             fs.unlink(`images/${filename}`, () => {
                 Sauce.deleteOne({ _id: req.params.id })
@@ -98,11 +102,17 @@ exports.deleteSauce = (req, res, next) => {
 
 /**------------Aimer / ne pas aimer une sauce existante ------------------------ */
 exports.likeSauce = (req, res, next) => {
+    if (!req.params.id){
+        res.status(400).json({ message: 'bad request'})
+    }
     const userId = req.body.userId;
     const like = req.body.like;
     const sauceId = req.params.id;
     Sauce.findOne({ _id: sauceId })
         .then(sauce => {
+            if(sauce==null){
+                return res.status(404).json({ message: 'ressource inexistante'})
+            }
             // nouvelles valeurs à modifier
             const newValues = {
                 usersLiked: sauce.usersLiked,
@@ -136,7 +146,11 @@ exports.likeSauce = (req, res, next) => {
             newValues.dislikes = newValues.usersDisliked.length;
 
             /** Update du nombre de like /dislike */
+            if (!req.params.id){
+                res.status(400).json({ message: 'bad request'})
+            }
             Sauce.updateOne({ _id: sauceId }, newValues )
+            
                 .then(() => res.status(200).json({ message: 'Merci pour votre avis !' }))
                 .catch(error => res.status(400).json({ error }))  
         })

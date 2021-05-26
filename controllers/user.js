@@ -3,7 +3,7 @@
 const bcrypt = require('bcrypt');
 //package jsonwebtoken pour attribuer un token à un utilisateur au moment ou il se connecte
 const jsonwebtoken = require('jsonwebtoken');
-// Plugin CryptoJS pour le cryptage de l'email, méthode 'HmacSHA256' SANS salage (pour pouvoir ensuite rechercher l'utilisateur simplement lors du login)
+// Plugin CryptoJS pour le cryptage de l'email, méthode 'HmacSHA256' 
 const cryptojs = require('crypto-js');
 
 const User = require('../models/user');
@@ -38,7 +38,7 @@ exports.login = (req, res, next) => {
                     const newToken = jsonwebtoken.sign(
                         { userId: user._id },
                         process.env.SECRET_TOKEN,
-                        { expiresIn: '60s' }
+                        { expiresIn: '1h' }
                     );
                     req.session.token = newToken; // envoi du token en session 
                     res.status(200).json({
